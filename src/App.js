@@ -1,50 +1,92 @@
 import './App.css';
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import Navbar from './Components/Navbar';
 import News from './Components/News';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-
-
 export default class App extends Component {
+
+  pageSize = 12;
+  country = "us";
+
   render() {
     return (
-      <div>
-        <Router>
-          <Navbar/>
-          <switch>
-            <Route exact path="/">
-              <News country= 'us' pageSize={12} category= "general" key= "general" />
-            </Route>
+      <Router>
+        <Navbar />
 
-            <Route exact path="/business">
-              <News country= 'us' pageSize={12} category= "business" key="business"/>
-            </Route>
+        <Switch>
 
-            <Route exact path="/entertainment">
-              <News country= 'us' pageSize={12} category= "entertainment" key="entertainment"/>
-            </Route>
+          <Route exact path="/" render={() => (
+            <News
+              key="general"
+              country={this.country}
+              pageSize={this.pageSize}
+              category="general"
+            />
+          )} />
 
-            <Route exact path="/health">
-              <News country= 'us' pageSize={12} category= "health" key="health"/>
-            </Route>
+          <Route exact path="/business" render={() => (
+            <News
+              key="business"
+              country={this.country}
+              pageSize={this.pageSize}
+              category="business"
+            />
+          )} />
 
-            <Route exact path="/science">
-              <News country= 'us' pageSize={12} category= "science" key="science"/>
-            </Route>
+          <Route exact path="/entertainment" render={() => (
+            <News
+              key="entertainment"
+              country={this.country}
+              pageSize={this.pageSize}
+              category="entertainment"
+            />
+          )} />
 
-            <Route exact path="/sports">
-              <News country= 'us' pageSize={12} category= "sports" key="sports"/>
-            </Route>
+          <Route exact path="/health" render={() => (
+            <News
+              key="health"
+              country={this.country}
+              pageSize={this.pageSize}
+              category="health"
+            />
+          )} />
 
-             <Route exact path="/technology">
-              <News country= 'us' pageSize={12} category= "technology" key="technology"/>
-            </Route>
+          <Route exact path="/science" render={() => (
+            <News
+              key="science"
+              country={this.country}
+              pageSize={this.pageSize}
+              category="science"
+            />
+          )} />
 
-          </switch>
-        </Router>
-      </div>
+          <Route exact path="/sports" render={() => (
+            <News
+              key="sports"
+              country={this.country}
+              pageSize={this.pageSize}
+              category="sports"
+            />
+          )} />
+
+          <Route exact path="/technology" render={() => (
+            <News
+              key="technology"
+              country={this.country}
+              pageSize={this.pageSize}
+              category="technology"
+            />
+          )} />
+
+          <Route render={() => (
+            <h2 style={{ textAlign: "center", marginTop: "50px" }}>
+              404 - Page Not Found
+            </h2>
+          )} />
+
+        </Switch>
+      </Router>
     )
   }
 }
-
