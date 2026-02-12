@@ -10,41 +10,33 @@ const News = (props) => {
   const [loading, setLoading] = useState(true);
   const [totalResults, setTotalResults] = useState(0);
 
-  const updateNews = async () => {
+  useEffect(() => {
 
-    setLoading(true);
+    const fetchNews = async () => {
 
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${process.env.REACT_APP_NEWS_KEY}&page=${page}&pageSize=${props.pageSize}`;
+      setLoading(true);
 
-    const response = await fetch(url);
-    const data = await response.json();
+      const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${process.env.REACT_APP_NEWS_KEY}&page=${page}&pageSize=${props.pageSize}`;
 
-    setArticles(data.articles || []);
-    setTotalResults(data.totalResults || 0);
-    setLoading(false);
-  };
+      const response = await fetch(url);
+      const data = await response.json();
 
-  
-useEffect(() => {
-   setPage(1);   
-}, [props.category]);
+      setArticles(data.articles || []);
+      setTotalResults(data.totalResults || 0);
+      setLoading(false);
+    };
 
-useEffect(() => {
-   updateNews();
-}, [props.category, page]);
+    fetchNews();
 
+  }, [props.category, page, props.country, props.pageSize]);
 
   const prevPg = () => {
-    setPage(page - 1);
+    setPage(prev => prev - 1);
   };
 
   const nxtPg = () => {
-
-    if (page + 1 > Math.ceil(totalResults / props.pageSize)) {
-      return;
-    }
-
-    setPage(page + 1);
+    if (page + 1 > Math.ceil(totalResults / props.pageSize)) return;
+    setPage(prev => prev + 1);
   };
 
   return (
@@ -61,14 +53,12 @@ useEffect(() => {
         {!loading && articles.map((element) => (
 
           <div className='col-md-4' key={element.url}>
-
             <NewsItems
               title={element.title ? element.title.slice(0, 45) : "No Title Available"}
               description={element.description ? element.description.slice(0, 90) : "No Description Available"}
               imgUrl={element.urlToImage}
               newsUrl={element.url}
             />
-
           </div>
 
         ))}
