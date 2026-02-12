@@ -16,74 +16,33 @@ export default class App extends Component {
 
         <Switch>
 
-          <Route exact path="/" render={() => (
-            <News
-              key="general"
-              country={this.country}
-              pageSize={this.pageSize}
-              category="general"
-            />
-          )} />
+          <Route exact path="/">
+            <News key="general" country="us" pageSize={12} category="general"/>
+          </Route>
 
-          <Route exact path="/business" render={() => (
-            <News
-              key="business"
-              country={this.country}
-              pageSize={this.pageSize}
-              category="business"
-            />
-          )} />
+          <Route exact path="/business">
+            <News key="business" country="us" pageSize={12} category="business"/>
+          </Route>
 
-          <Route exact path="/entertainment" render={() => (
-            <News
-              key="entertainment"
-              country={this.country}
-              pageSize={this.pageSize}
-              category="entertainment"
-            />
-          )} />
+          <Route exact path="/entertainment">
+            <News key="entertainment" country="us" pageSize={12} category="entertainment"/>
+          </Route>
 
-          <Route exact path="/health" render={() => (
-            <News
-              key="health"
-              country={this.country}
-              pageSize={this.pageSize}
-              category="health"
-            />
-          )} />
+          <Route exact path="/health">
+            <News key="health" country="us" pageSize={12} category="health"/>
+          </Route>
 
-          <Route exact path="/science" render={() => (
-            <News
-              key="science"
-              country={this.country}
-              pageSize={this.pageSize}
-              category="science"
-            />
-          )} />
+          <Route exact path="/science">
+            <News key="science" country="us" pageSize={12} category="science"/>
+          </Route>
 
-          <Route exact path="/sports" render={() => (
-            <News
-              key="sports"
-              country={this.country}
-              pageSize={this.pageSize}
-              category="sports"
-            />
-          )} />
+          <Route exact path="/sports">
+            <News key="sports" country="us" pageSize={12} category="sports"/>
+          </Route>
 
-          <Route exact path="/technology" render={() => (
-            <News
-              key="technology"
-              country={this.country}
-              pageSize={this.pageSize}
-              category="technology"
-            />
-          )} />
-
-          <Route render={() => (
-            <h2 style={{ textAlign: "center", marginTop: "50px" }}>
-              404 - Page Not Found
-            </h2>
-          )} />
+          <Route exact path="/technology">
+            <News key="technology" country="us" pageSize={12} category="technology"/>
+          </Route>
 
         </Switch>
       </Router>

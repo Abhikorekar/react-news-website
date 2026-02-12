@@ -1,108 +1,114 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import NewsItems from './NewsItems'
 import Loading from './Loading';
 import PropTypes from 'prop-types';
-import InfiniteScroll from "react-infinite-scroll-component";
 
-export class News extends Component {
+const News = (props) => {
 
-  static defaultProps = {   
-    country :  "us",
-    pageSize: 12,
-    category: 'general',
-  }
+  const [articles, setArticles] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [totalResults, setTotalResults] = useState(0);
 
-  static propTypes = {
-    country: PropTypes.string,
-    pageSize: PropTypes.number,
-    category: PropTypes.string
-  }
+  const updateNews = async () => {
 
-  constructor() {
-    super();
-    this.state = {
-      articles: [],
-      page: 1,
-      totalResults: 0
-    };
-  }
+    setLoading(true);
 
-  async updateNews() {
-    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=a38f811d308c427dbdc83a5bc2c43d44&page=${this.state.page}&pageSize=12`;
-    
-    const data = await fetch(url);
-    const parseData = await data.json();
+    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${process.env.REACT_APP_NEWS_KEY}&page=${page}&pageSize=${props.pageSize}`;
 
-    this.setState({
-      articles: parseData.articles,
-      totalResults: parseData.totalResults
-    });
-  }
+    const response = await fetch(url);
+    const data = await response.json();
 
-  async componentDidMount() {
-    this.updateNews();
-  }
+    setArticles(data.articles || []);
+    setTotalResults(data.totalResults || 0);
+    setLoading(false);
+  };
 
-  prevPg = async () => {
-    this.setState({ page: this.state.page - 1 });
-    this.updateNews();
-  }
+  
+useEffect(() => {
+   setPage(1);   
+}, [props.category]);
 
-  nxtPg = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.totalResults / 12)) {
+useEffect(() => {
+   updateNews();
+}, [props.category, page]);
+
+
+  const prevPg = () => {
+    setPage(page - 1);
+  };
+
+  const nxtPg = () => {
+
+    if (page + 1 > Math.ceil(totalResults / props.pageSize)) {
       return;
-    } else {
-      this.setState({ page: this.state.page + 1 });
-      this.updateNews();
     }
-  }
 
-  render() {
-    return (
-      <div className='container my-3'>
+    setPage(page + 1);
+  };
 
-        <h2 className="section-title">
-  📰 Top {this.props.category.charAt(0).toUpperCase() + this.props.category.slice(1)} Headlines
-</h2>
+  return (
+    <div className='container my-3'>
 
-        {this.state.loading && <Loading/>}
+      <h2 className="section-title">
+        📰 Top {props.category.charAt(0).toUpperCase() + props.category.slice(1)} Headlines
+      </h2>
 
-        <div className='row'>
-          {!this.state.loading && this.state.articles.map((element) => (
-            <div className='col-md-4' key={element.url}>
-              <NewsItems
-                title={element.title ? element.title.slice(0, 45) : "No Title Available"}
-                description={element.description ? element.description.slice(0, 90) : "No Description Available"}
-                imgUrl={element.urlToImage}
-                newsUrl={element.url}
-              />
-            </div>
-          ))}
-        </div>
+      {loading && <Loading/>}
 
-        <div className="container my-3 d-flex justify-content-between">
-          <button 
-            type="button" 
-            onClick={this.prevPg} 
-            className="btn btn-dark" 
-            disabled={this.state.page <= 1}
-          >
-            &larr; Previous
-          </button>
+      <div className='row'>
 
-          <button 
-            type="button" 
-            onClick={this.nxtPg} 
-            className="btn btn-dark"
-            disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / 12)}
-          >
-            Next &rarr;
-          </button>
-        </div>
+        {!loading && articles.map((element) => (
+
+          <div className='col-md-4' key={element.url}>
+
+            <NewsItems
+              title={element.title ? element.title.slice(0, 45) : "No Title Available"}
+              description={element.description ? element.description.slice(0, 90) : "No Description Available"}
+              imgUrl={element.urlToImage}
+              newsUrl={element.url}
+            />
+
+          </div>
+
+        ))}
 
       </div>
-    );
-  }
+
+      <div className="container my-3 d-flex justify-content-between">
+
+        <button 
+          className="btn btn-dark"
+          disabled={page <= 1}
+          onClick={prevPg}
+        >
+          ← Previous
+        </button>
+
+        <button 
+          className="btn btn-dark"
+          disabled={page + 1 > Math.ceil(totalResults / props.pageSize)}
+          onClick={nxtPg}
+        >
+          Next →
+        </button>
+
+      </div>
+
+    </div>
+  );
+}
+
+News.defaultProps = {
+  country: "us",
+  pageSize: 12,
+  category: "general"
+}
+
+News.propTypes = {
+  country: PropTypes.string,
+  pageSize: PropTypes.number,
+  category: PropTypes.string
 }
 
 export default News;
